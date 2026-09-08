@@ -49,9 +49,9 @@ class ImageProcessing:
         pixels = self.result_img.load()
         width, height = self.result_img.size
 
-        pixels[0, 0] = (255, 127, 127)
-        pixels[width // 2, 0] = (127, 255, 127)
-        pixels[0, height - 1] = (127, 127, 255)
+        pixels[0, 0] = (255, 127, 127) #левый верхний угол, насыщенный розовый
+        pixels[width // 2, 0] = (127, 255, 127) #центр верхней строки, кричащий зелёный
+        pixels[0, height - 1] = (127, 127, 255) #левый нижний угол, умеренный аспидно-синий
 
         self.show_image(self.result_img)
         self.button_save.config(state=tk.NORMAL)
