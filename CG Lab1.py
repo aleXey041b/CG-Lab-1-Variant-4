@@ -28,6 +28,9 @@ class ImageProcessing:
         self.image_label = tk.Label(root, text="Выберите изображение", bg="#e0e0e0")
         self.image_label.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
 
+        self.button_save_pbm = tk.Button(button_frame, text="Сохранить в PBM", command=self.save_pbm, width=15, height=2, state=tk.DISABLED)
+        self.button_save_pbm.pack(side=tk.LEFT, padx=5)
+
     def open_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Изображения", "*.png *.jpg *.jpeg *.bmp *.webp"), ("Все файлы", "*.*")])
         if not file_path:
@@ -38,6 +41,7 @@ class ImageProcessing:
 
         self.button_process.config(state=tk.NORMAL)
         self.button_save.config(state=tk.DISABLED)
+        self.button_save_pbm.config(state=tk.DISABLED)
 
         self.show_image(self.orig_img)
 
@@ -55,6 +59,7 @@ class ImageProcessing:
 
         self.show_image(self.result_img)
         self.button_save.config(state=tk.NORMAL)
+        self.button_save_pbm.config(state=tk.NORMAL)
         messagebox.showinfo("Успех", "Изображение обработано!")
 
     def save_image(self):
@@ -79,6 +84,33 @@ class ImageProcessing:
 
         self.display_img = ImageTk.PhotoImage(img_copy)
         self.image_label.config(image=self.display_img, text="")
+
+    def save_pbm(self):
+        if self.result_img is None:
+            return
+
+        result_dir = "images"
+        
+        result_path = os.path.join(result_dir, "result var 4.pbm")
+
+        width, height = self.result_img.size
+        pixels = self.result_img.load()
+
+        with open(result_path, 'w', encoding='ascii') as f:
+            f.write(f"{width} {height}\n")
+
+            for y in range(height):
+                row = []
+                for x in range(width):
+                    r, g, b = pixels[x, y]
+                    brightness = (r + g + b) // 3
+                    pixel_bin = 1 if brightness < 128 else 0
+                    row.append(str(pixel_bin))
+
+                f.write(" ".join(row) + "\n")
+
+        messagebox.showinfo("Сохранение", f"Файл PBM сохранен в:\n{os.path.abspath(result_path)}")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
